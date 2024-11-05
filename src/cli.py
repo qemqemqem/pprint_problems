@@ -111,6 +111,7 @@ def main() -> None:
     # group = parser.add_argument_group("Miscellaneous Options")
 
     # Create the parser for the "graph" command
+    # TODO Make this more generic
     group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
     group.add_argument("--param", choices=['all'] + ALL_GRAPHING_PARAMS,
                         default='set_size',

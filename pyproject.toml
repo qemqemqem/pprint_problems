@@ -14,8 +14,10 @@ requires-python = ">=3.9"
 dependencies = [
     "matplotlib>=3.5.1",
     "numpy>=1.21.5",
-    "rich>=13.9.4", 
-    "scipy>=1.8.0"
+    "rich>=13.9.4",
+    "scipy>=1.8.0",
+    "Pillow>=10.0.0",
+    "kiwisolver>=1.4.0"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
