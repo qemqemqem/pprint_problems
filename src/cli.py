@@ -41,7 +41,11 @@ from printing import (
     configure_console, set_max_print_len
 )
 from parsing import iterate_over_problems, print_structure
-from graphing import main as graph_main
+try:
+    from graphing import main as graph_main
+    GRAPHING_AVAILABLE = True
+except ImportError:
+    GRAPHING_AVAILABLE = False
 
 
 def main() -> None:
@@ -155,7 +159,10 @@ def main() -> None:
 
     # Handle the different modes
     if args.mode == 'graph':
-        graph_main()
+        if GRAPHING_AVAILABLE:
+            graph_main()
+        else:
+            print("Graphing functionality not available - please check matplotlib installation")
         return
     
     # Default to print mode
