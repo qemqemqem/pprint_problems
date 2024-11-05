@@ -38,7 +38,7 @@ import sys
 from parsing import process_file, COMMON_LOCATIONS
 from printing import (
     print_text, print_file_output,
-    configure_console, set_max_print_len
+    configure_console, set_max_print_len, WIDTH
 )
 from parsing import iterate_over_problems, print_structure
 try:
