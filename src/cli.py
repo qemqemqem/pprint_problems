@@ -119,7 +119,7 @@ def main() -> None:
     # TODO Make this more generic
     group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
     group.add_argument("--graph", action="store_true", default=False, help="Create a graph from the data")
-    group.add_argument("--graph_type", type=str, choices=["box", "binary"], default="box", help="Type of graph to create")
+    group.add_argument("--graph_type", type=str, choices=["default", "box", "binary"], default="default", help="Type of graph to create. Default is box, unless the data appears to be binary.")
     group.add_argument("--stats", action="store_true", default=False, help="Print out statistics about the data. This is the same as `--graph`, but without the graph, just the numbers.")
     group.add_argument("--param",
                        # choices=['all'] + ALL_GRAPHING_PARAMS,

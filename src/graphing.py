@@ -131,7 +131,7 @@ def create_graph(results, param, y_value, args):
         args.graph_type = "box"
         # Check if data is all binary
         all_values = [v for values in param_values.values() for v in values]
-        if all(v in [0, 1] for v in all_values):
+        if all(v in [0, 1, False, True] for v in all_values):
             args.graph_type = "binary"
 
     if args.graph_type == "box":
