@@ -172,10 +172,10 @@ def create_binary_plot(args, param, param_values, x_data, y_value):
     if args.use_multiple_colors:
         # Generate distinct colors using a colormap
         colors = plt.cm.Set3(np.linspace(0, 1, len(x_data)))
-        plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.8, color=colors)
+        bars = plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.8, color=colors)
     else:
         # Use single color for all bars
-        plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.6, color='#1E88E5')
+        bars = plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.6, color='#1E88E5')
     
     # Add error bars
     plt.errorbar(range(1, len(x_data) + 1), proportions, 
@@ -212,8 +212,8 @@ def create_binary_plot(args, param, param_values, x_data, y_value):
     
     # Add legend
     legend_labels = [f'{param.replace("_", " ").title()} = {x}: N={n}' for x, n in zip(x_data, ns)]
-    print(legend_labels)
-    plt.legend(legend_labels,
+    plt.legend(bars,
+              legend_labels,
               title="Parameter Values and Sample Sizes\n(Error bars show 95% CI)",
               title_fontsize=10, fontsize=8,
               loc='center left', bbox_to_anchor=(1, 0.5))
