@@ -20,4 +20,4 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/qemqemqem/pprint_problems"
 [project.scripts]
-pprint_problems = "cli:main"
+pprint_problems = "pprint_problems.cli:main"
