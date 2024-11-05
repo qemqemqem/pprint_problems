@@ -124,8 +124,8 @@ def create_graph(results, param, y_value, args):
 
 
 def main(args):
-    default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
-    default_input_file = get_latest_file(default_input_dir)
+    # default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
+    # default_input_file = get_latest_file(default_input_dir)
 
     print(f"Input file: {args.file}")
     print(f"Param: {args.param}")

@@ -32,6 +32,7 @@ Here are some recommended ways to use this script:
 
 
 import argparse
+import os
 import random
 import sys
 
@@ -62,6 +63,7 @@ def main() -> None:
         default=sys.stdin,
         help="The file to process. This may be an S3 location. Defaults to stdin.",
     )
+    group.add_argument("--dir_most_recent", type=str, help="If set, the most recently modified jsonl file in this dir will be used as the file.")
     group.add_argument(
         "-p",
         "--parts",
@@ -133,6 +135,16 @@ def main() -> None:
     if args.max_str_len:
         set_max_print_len(args.max_str_len)
 
+    # Check args.dir_most_recent
+    if args.dir_most_recent:
+        assert args.file == sys.stdin, "Cannot specify both --dir_most_recent and a file."
+        most_recent_file = max(
+            (os.path.join(root, f) for root, _, files in os.walk(args.dir_most_recent) for f in files if f.endswith('.jsonl')),
+            key=os.path.getmtime
+        )
+        print(f"Using most recently modified file: {most_recent_file}")
+        args.file = most_recent_file
+
     if args.file == sys.stdin:
         file_contents = process_file(sys.stdin)
     elif args.file.lower().startswith("s3://"):
@@ -159,7 +171,7 @@ def main() -> None:
     if args.structure:
         print_structure(args, lines)
     elif args.graph:
-        ...
+        graph_main(args)
 
     # The main case, iterate over problems
     else:
