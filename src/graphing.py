@@ -65,6 +65,44 @@ def get_data(param, results, y_value):
 
 def print_stats(results, param, y_value, args):
     param_values, x_data = get_data(param, results, y_value)
+    
+    print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title()}")
+    print("-" * 80)
+    
+    # Print summary statistics for each parameter value
+    for x in sorted(x_data):
+        values = param_values[x]
+        print(f"\nGroup: {x}")
+        print(f"  N: {len(values)}")
+        print(f"  Mean: {np.mean(values):.3f}")
+        print(f"  Median: {np.median(values):.3f}")
+        print(f"  Std Dev: {np.std(values):.3f}")
+        print(f"  Min: {np.min(values):.3f}")
+        print(f"  Max: {np.max(values):.3f}")
+    
+    # If we have numeric x values and more than one group, perform regression analysis
+    if len(x_data) > 1 and all(isinstance(x, (int, float)) for x in x_data):
+        all_x = []
+        all_y = []
+        for x in x_data:
+            all_x.extend([x] * len(param_values[x]))
+            all_y.extend(param_values[x])
+            
+        slope, intercept, r_value, p_value, std_err = stats.linregress(all_x, all_y)
+        print(f"\nRegression Analysis:")
+        print(f"  Slope: {slope:.3f}")
+        print(f"  Intercept: {intercept:.3f}")
+        print(f"  R-squared: {r_value**2:.3f}")
+        print(f"  P-value: {p_value:.3f}")
+        print(f"  Standard Error: {std_err:.3f}")
+    
+    # If we have more than one group, perform ANOVA
+    if len(x_data) > 1:
+        groups = [param_values[x] for x in x_data]
+        f_stat, anova_p = stats.f_oneway(*groups)
+        print(f"\nOne-way ANOVA:")
+        print(f"  F-statistic: {f_stat:.3f}")
+        print(f"  P-value: {anova_p:.3f}")
 
 
 def create_graph(results, param, y_value, args):
