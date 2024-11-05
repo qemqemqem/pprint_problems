@@ -11,6 +11,12 @@ authors = [
 description = "Alternative to the `jq` command that's a bit optimized for LLM eval datasets in jsonl format."
 readme = "README.md"
 requires-python = ">=3.9"
+dependencies = [
+    "matplotlib==3.5.1",
+    "numpy==1.21.5", 
+    "rich==13.9.4",
+    "scipy==1.8.0"
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
