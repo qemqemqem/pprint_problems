@@ -127,9 +127,23 @@ def create_graph(results, param, y_value, args):
 
     plt.figure(figsize=(14, 8))  # Larger figure to accommodate additional legend
 
+    if args.graph_type == "box":
+        create_box_plot(args, param, param_values, x_data, y_value)
+    elif args.graph_type == "binary":
+        create_binary_plot(args, param, param_values, x_data, y_value)
+
+    # print the location where these are all saved
+    output_dir = Path(args.file).parent / Path(args.file).stem
+    print(f"\nGraphs saved in: {output_dir}")
+
+
+def create_binary_plot(args, param, param_values, x_data, y_value):
+    ...
+
+
+def create_box_plot(args, param, param_values, x_data, y_value):
     # Create box plot
     box_plot = plt.boxplot([param_values[x] for x in x_data], patch_artist=True, medianprops={'color': "#D81B60"})
-
     # Customize box plot colors
     if args.use_multiple_colors:
         # Generate distinct colors using a colormap
@@ -140,7 +154,6 @@ def create_graph(results, param, y_value, args):
         # Use single color for all boxes
         for box in box_plot['boxes']:
             box.set(facecolor='#1E88E5', alpha=0.6)
-
     # Plot individual data points with jitter
     all_x = []
     all_y = []
@@ -150,7 +163,6 @@ def create_graph(results, param, y_value, args):
         plt.scatter(np.array([i + 1] * len(y)) + jitter, y, color='#888888', alpha=0.3, s=30, zorder=2)
         all_x.extend([x] * len(y))
         all_y.extend(y)
-
     # Compute best fit line
     # all_x will be non-numeric if it's string values
     if all(isinstance(i, (int, float)) for i in all_x):
@@ -161,52 +173,38 @@ def create_graph(results, param, y_value, args):
         r_value_legend = [f'Best Fit Line (slope = {slope:.3f}) (R² = {r_value ** 2:.3f})']
     else:
         r_value_legend = []
-
     plt.xlabel(param.replace('_', ' ').title(), fontsize=11, fontweight='bold')
     plt.ylabel(f'{y_value.replace("_", " ").title()}', fontsize=11, fontweight='bold')
     plt.title(f'Impact of {param.replace("_", " ").title()} on {y_value.replace("_", " ").title()}', fontsize=13,
               fontweight='bold')
-
     plt.xticks(range(1, len(x_data) + 1), x_data, rotation=0, ha='center', fontsize=9)
-
     # Print median horizontally below the x-axis labels
     for i, x in enumerate(x_data):
         median_value = np.median(param_values[x])
         plt.text(i + 1, plt.gca().get_ylim()[0] - 0.03 * (plt.gca().get_ylim()[1] - plt.gca().get_ylim()[0]),
                  f'Median: {median_value:.2f}', rotation=0, va='top', ha='center', fontsize=8)
     plt.yticks(fontsize=9)
-
     plt.grid(axis='y', linestyle='--', alpha=0.3)
     plt.gca().set_facecolor('#f9f9f9')  # Very light gray background
-
     # Add a subtle border
     for spine in plt.gca().spines.values():
         spine.set_edgecolor('#e0e0e0')
-
     # Add legend to show N for each bin and best fit line info
     legend_labels = [f'{param.replace("_", " ").title()} = {x}: N={len(param_values[x])}' for x in x_data]
     plt.legend(legend_labels + r_value_legend,
                title="Parameter Values and Sample Sizes", title_fontsize=10, fontsize=8,
                loc='center left', bbox_to_anchor=(1, 0.5))
-
     plt.tight_layout()
-
     # Save the graph as an image
     output_dir = Path(args.file).parent / Path(args.file).stem
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / f"{param}_{y_value}.png"
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"Graph saved as: {output_file}")
-
     # Show it to the user if display_graph is True
     if args.display_graph:
         plt.show()
-
     plt.close()
-
-    # print the location where these are all saved
-    output_dir = Path(args.file).parent / Path(args.file).stem
-    print(f"\nGraphs saved in: {output_dir}")
 
 
 def main(args):
