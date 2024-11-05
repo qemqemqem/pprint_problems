@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
+"""
+Pretty prints JSONL files with optional selective output.
+
+This is code that I've written in the past for dealing with JSONL files, including it here because I used it to examine the files.
+
+Run it like this:
+
+```
+python pprint_json.py dev.jsonl -n 1 -p label text -r
+```
+"""
+
 import argparse
 import json
 import random
 import sys
 
-from .parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
-from .printing import (
+from parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
+from printing import (
     print_text, print_header_1, print_code, print_file_output, 
-    configure_console, MAX_PRINT_LEN, set_max_print_len
+    configure_console, MAX_PRINT_LEN, set_max_print_len, WIDTH
 )
 
 
