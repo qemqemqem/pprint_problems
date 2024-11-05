@@ -77,7 +77,7 @@ def build_parts(problem: dict, parts: list[str]) -> dict[str, Any]:
             value = get_nested_value(problem, keys)
             if value is not None:
                 results[part] = value
-                break
+                continue
         if part not in results:
             results[part] = problem.get(part, None)
 
