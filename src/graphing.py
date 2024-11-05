@@ -204,6 +204,13 @@ def create_binary_plot(args, param, param_values, x_data, y_value):
     for spine in plt.gca().spines.values():
         spine.set_edgecolor('#e0e0e0')
     
+    # Add legend
+    legend_labels = [f'{param.replace("_", " ").title()} = {x}: N={n}' for x, n in zip(x_data, ns)]
+    plt.legend(legend_labels,
+              title="Parameter Values and Sample Sizes\n(Error bars show 95% CI)",
+              title_fontsize=10, fontsize=8,
+              loc='center left', bbox_to_anchor=(1, 0.5))
+    
     plt.tight_layout()
     
     # Save the graph
