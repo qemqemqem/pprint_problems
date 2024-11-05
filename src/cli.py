@@ -5,10 +5,8 @@ import json
 import random
 import sys
 
-from rich import Console
-
 from src.parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
-from src.printing import USE_RICH, print_text, print_header_1, print_code, print_file_output
+from src.printing import print_text, print_header_1, print_code, print_file_output, configure_console
 
 
 def main() -> None:
@@ -83,15 +81,10 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if USE_RICH:
-        global console
-        if args.width and args.width != WIDTH:
-            console = Console(force_terminal=True, width=args.width, record=True)
-        else:
-            console = Console(force_terminal=True, record=True)
-    WIDTH = args.width
+    configure_console(args)
 
     if args.max_str_len:
+        from src.printing import MAX_PRINT_LEN
         global MAX_PRINT_LEN
         MAX_PRINT_LEN = args.max_str_len
 
@@ -172,7 +165,6 @@ def main() -> None:
 
     if args.file_output:
         print_file_output(args)
-
 
 
 if __name__ == "__main__":

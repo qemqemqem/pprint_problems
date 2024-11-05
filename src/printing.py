@@ -1,4 +1,3 @@
-
 try:
     from rich.console import Console
     from rich.markdown import Markdown
@@ -76,3 +75,14 @@ def print_file_output(args):
         raise NotImplementedError(
             "File output is only supported with the rich library. Use `> output.txt` instead."
         )
+
+
+def configure_console(args):
+    global WIDTH
+    if USE_RICH:
+        global console
+        if args.width and args.width != WIDTH:
+            console = Console(force_terminal=True, width=args.width, record=True)
+        else:
+            console = Console(force_terminal=True, record=True)
+    WIDTH = args.width
