@@ -127,6 +127,13 @@ def create_graph(results, param, y_value, args):
 
     plt.figure(figsize=(14, 8))  # Larger figure to accommodate additional legend
 
+    if args.graph_type == "default":
+        args.graph_type = "box"
+        # Check if data is all binary
+        print(param_values)
+        if all(pv in [0, 1] for pv in value_list for value_list in param_values.values()):
+            args.graph_type = "binary"
+
     if args.graph_type == "box":
         create_box_plot(args, param, param_values, x_data, y_value)
     elif args.graph_type == "binary":
