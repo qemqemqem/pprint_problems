@@ -6,7 +6,10 @@ import random
 import sys
 
 from src.parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
-from src.printing import print_text, print_header_1, print_code, print_file_output, configure_console
+from src.printing import (
+    print_text, print_header_1, print_code, print_file_output, 
+    configure_console, MAX_PRINT_LEN, set_max_print_len
+)
 
 
 def main() -> None:
@@ -84,9 +87,7 @@ def main() -> None:
     configure_console(args)
 
     if args.max_str_len:
-        from src.printing import MAX_PRINT_LEN
-        global MAX_PRINT_LEN
-        MAX_PRINT_LEN = args.max_str_len
+        set_max_print_len(args.max_str_len)
 
     if args.file == sys.stdin:
         file_contents = process_file(sys.stdin)

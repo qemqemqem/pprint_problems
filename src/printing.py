@@ -15,6 +15,11 @@ if USE_RICH:
 MAX_PRINT_LEN = None
 
 
+def set_max_print_len(length: int | None) -> None:
+    global MAX_PRINT_LEN 
+    MAX_PRINT_LEN = length
+
+
 
 def print_header_1(text: str) -> None:
     if USE_RICH:
