@@ -1,14 +1,35 @@
 #!/usr/bin/env python3
 
 """
-Pretty prints JSONL files with optional selective output.
+Pretty prints JSONL problem files with optional selective output.
 
-Run it like this:
+Here are some recommended ways to use this script:
 
-```
-python pprint_json.py dev.jsonl -n 1 -p label text -r
-```
+1. Search for particular problems:
+    python scripts/pprint_problems.py s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl -r --search pig -b
+
+2. Load a local file:
+    python scripts/pprint_problems.py ~/Downloads/mbpp_healed_test.jsonl --randomize -n 1 --parts code tests
+
+3. Load a local file with "cat":
+    cat ~/Downloads/mbpp_healed_test.jsonl | grep "pig.*latin" | python scripts/pprint_problems.py -n 1 -p code
+
+4. Load an S3 file:
+    python scripts/pprint_problems.py -r -n 1 s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl
+
+5. Use some arguments to only load a subset:
+    python scripts/pprint_problems.py my_problems.jsonl --n 3 --width 100 --line-numbers --randomize
+
+6. Print out the structure:
+    python scripts/pprint_problems.py --structure s3://int8-datasets/evals/generative/mbpp_healed/v2/test.jsonl
+
+7. Print out the raw JSON:
+    python scripts/pprint_problems.py --n 1 --raw s3://int8-datasets/evals/generative/mbpp_healed/v2/test.jsonl
+
+8. Manually filter problems with y/n on the keyboard:
+    python scripts/pprint_problems.py s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl --manual-filter -p code broken_diff
 """
+
 
 import argparse
 import random
