@@ -138,7 +138,77 @@ def create_graph(results, param, y_value, args):
 
 
 def create_binary_plot(args, param, param_values, x_data, y_value):
-    ...
+    # Calculate proportions and confidence intervals for each group
+    proportions = []
+    confidence_intervals = []
+    ns = []
+    
+    for x in x_data:
+        values = param_values[x]
+        n = len(values)
+        ns.append(n)
+        # Calculate proportion of 1's
+        prop = sum(1 for v in values if v == 1) / n
+        proportions.append(prop)
+        
+        # Calculate Wilson score interval
+        if n > 0:
+            z = 1.96  # 95% confidence
+            denominator = 1 + z**2/n
+            center = (prop + z**2/(2*n))/denominator
+            spread = z * np.sqrt(prop*(1-prop)/n + z**2/(4*n**2))/denominator
+            confidence_intervals.append((spread, spread))
+        else:
+            confidence_intervals.append((0, 0))
+
+    # Create bar plot
+    plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.6, color='#1E88E5')
+    
+    # Add error bars
+    plt.errorbar(range(1, len(x_data) + 1), proportions, 
+                yerr=np.array(confidence_intervals).T,
+                fmt='none', color='#D81B60', capsize=5)
+
+    # Customize the plot
+    plt.xlabel(param.replace('_', ' ').title(), fontsize=11, fontweight='bold')
+    plt.ylabel(f'Proportion of {y_value.replace("_", " ").title()}', fontsize=11, fontweight='bold')
+    plt.title(f'Impact of {param.replace("_", " ").title()} on {y_value.replace("_", " ").title()}', 
+              fontsize=13, fontweight='bold')
+    
+    # Set x-axis ticks
+    plt.xticks(range(1, len(x_data) + 1), x_data, rotation=0, ha='center', fontsize=9)
+    
+    # Add sample size labels below x-axis
+    for i, (x, n) in enumerate(zip(x_data, ns)):
+        plt.text(i + 1, -0.05, f'N={n}', ha='center', va='top', transform=plt.gca().get_xaxis_transform())
+    
+    # Add proportion values on top of bars
+    for i, prop in enumerate(proportions):
+        plt.text(i + 1, prop, f'{prop:.2f}', ha='center', va='bottom')
+    
+    # Customize grid and background
+    plt.grid(axis='y', linestyle='--', alpha=0.3)
+    plt.gca().set_facecolor('#f9f9f9')
+    
+    # Set y-axis limits to accommodate labels
+    plt.ylim(-0.05, 1.1)
+    
+    # Add subtle border
+    for spine in plt.gca().spines.values():
+        spine.set_edgecolor('#e0e0e0')
+    
+    plt.tight_layout()
+    
+    # Save the graph
+    output_dir = Path(args.file).parent / Path(args.file).stem
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_file = output_dir / f"{param}_{y_value}_binary.png"
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"Graph saved as: {output_file}")
+    
+    if args.display_graph:
+        plt.show()
+    plt.close()
 
 
 def create_box_plot(args, param, param_values, x_data, y_value):
