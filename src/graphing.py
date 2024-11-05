@@ -168,8 +168,14 @@ def create_binary_plot(args, param, param_values, x_data, y_value):
         else:
             confidence_intervals.append((0, 0))
 
-    # Create bar plot
-    plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.6, color='#1E88E5')
+    # Create bar plot with appropriate colors
+    if args.use_multiple_colors:
+        # Generate distinct colors using a colormap
+        colors = plt.cm.Set3(np.linspace(0, 1, len(x_data)))
+        plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.8, color=colors)
+    else:
+        # Use single color for all bars
+        plt.bar(range(1, len(x_data) + 1), proportions, alpha=0.6, color='#1E88E5')
     
     # Add error bars
     plt.errorbar(range(1, len(x_data) + 1), proportions, 
