@@ -1,5 +1,5 @@
 [build-system]
-requires = [""]
+requires = []
 build-backend = ""
 
 [project]
@@ -19,3 +19,5 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/qemqemqem/pprint_problems"
+[project.scripts]
+jqgraph = "pprint_problems.cli:main"
