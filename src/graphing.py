@@ -206,6 +206,7 @@ def create_binary_plot(args, param, param_values, x_data, y_value):
     
     # Add legend
     legend_labels = [f'{param.replace("_", " ").title()} = {x}: N={n}' for x, n in zip(x_data, ns)]
+    print(legend_labels)
     plt.legend(legend_labels,
               title="Parameter Values and Sample Sizes\n(Error bars show 95% CI)",
               title_fontsize=10, fontsize=8,
