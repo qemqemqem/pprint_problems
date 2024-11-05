@@ -70,10 +70,11 @@ def print_stats(results, param, y_value, args):
     print("-" * 80)
     
     # Filter out groups with insufficient N
-    valid_x_data = [x for x in x_data if len(param_values[x]) >= args.min_n]
-    if len(valid_x_data) < len(x_data):
-        print(f"\nNote: Excluding groups with N < {args.min_n}")
-        print(f"Original groups: {len(x_data)}, Valid groups: {len(valid_x_data)}")
+    if args.min_n > 1:
+        valid_x_data = [x for x in x_data if len(param_values[x]) >= args.min_n]
+        if len(valid_x_data) < len(x_data):
+            print(f"\nNote: Excluding groups with N < {args.min_n}")
+            print(f"Original groups: {len(x_data)}, Valid groups: {len(valid_x_data)}")
     
     # Print summary statistics for each parameter value
     for x in sorted(valid_x_data):

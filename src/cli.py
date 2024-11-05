@@ -124,6 +124,7 @@ def main() -> None:
                        # choices=['all'] + ALL_GRAPHING_PARAMS,
                         default='set_size',
                         help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters.")
+    group.add_argument("--min_n", type=int, default=0, help="Ignore groups with fewer than this many entries when graphing and in stats.")
     group.add_argument("--y_value",
                         # choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score', 'len_response'],
                         default='correct', help="Value to use for y-axis. This can be any numeric value in the top level of the jsonl.")
