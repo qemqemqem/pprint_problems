@@ -40,7 +40,8 @@ from printing import (
     print_text, print_file_output,
     configure_console, set_max_print_len
 )
-from src.parsing import iterate_over_problems, print_structure
+from parsing import iterate_over_problems, print_structure
+from graphing import main as graph_main
 
 
 def main() -> None:
@@ -154,7 +155,6 @@ def main() -> None:
 
     # Handle the different modes
     if args.mode == 'graph':
-        from graphing import main as graph_main
         graph_main()
         return
     
