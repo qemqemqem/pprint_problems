@@ -69,8 +69,14 @@ def print_stats(results, param, y_value, args):
     print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title()}")
     print("-" * 80)
     
+    # Filter out groups with insufficient N
+    valid_x_data = [x for x in x_data if len(param_values[x]) >= args.min_n]
+    if len(valid_x_data) < len(x_data):
+        print(f"\nNote: Excluding groups with N < {args.min_n}")
+        print(f"Original groups: {len(x_data)}, Valid groups: {len(valid_x_data)}")
+    
     # Print summary statistics for each parameter value
-    for x in sorted(x_data):
+    for x in sorted(valid_x_data):
         values = param_values[x]
         print(f"\nGroup: {x}")
         print(f"  N: {len(values)}")
@@ -81,10 +87,10 @@ def print_stats(results, param, y_value, args):
         print(f"  Max: {np.max(values):.3f}")
     
     # If we have numeric x values and more than one group, perform regression analysis
-    if len(x_data) > 1 and all(isinstance(x, (int, float)) for x in x_data):
+    if len(valid_x_data) > 1 and all(isinstance(x, (int, float)) for x in valid_x_data):
         all_x = []
         all_y = []
-        for x in x_data:
+        for x in valid_x_data:
             all_x.extend([x] * len(param_values[x]))
             all_y.extend(param_values[x])
             
@@ -97,8 +103,8 @@ def print_stats(results, param, y_value, args):
         print(f"  Standard Error: {std_err:.3f}")
     
     # If we have more than one group, perform ANOVA
-    if len(x_data) > 1:
-        groups = [param_values[x] for x in x_data]
+    if len(valid_x_data) > 1:
+        groups = [param_values[x] for x in valid_x_data]
         f_stat, anova_p = stats.f_oneway(*groups)
         print(f"\nOne-way ANOVA:")
         print(f"  F-statistic: {f_stat:.3f}")
