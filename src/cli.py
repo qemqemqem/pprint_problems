@@ -41,11 +41,7 @@ from printing import (
     configure_console, set_max_print_len, WIDTH
 )
 from parsing import iterate_over_problems, print_structure
-try:
-    from graphing import main as graph_main
-    GRAPHING_AVAILABLE = True
-except ImportError:
-    GRAPHING_AVAILABLE = False
+from graphing import main as graph_main, ALL_GRAPHING_PARAMS
 
 
 def main() -> None:
@@ -115,44 +111,23 @@ def main() -> None:
     # group = parser.add_argument_group("Miscellaneous Options")
 
     # Create the parser for the "graph" command
-    group = parser.add_argument_group('Graphing')
-    group.add_argument(
-        "--input_file",
-        type=str,
-        help="Path to the input JSONL file with evaluation results"
-    )
-    group.add_argument(
-        "--param",
-        choices=['all', 'bimodal_discount', 'set_size', 'num_people', 'num_interests',
-                'avg_points', 'think_through', 'percent_chain_of_thought'],
-        default='set_size',
-        help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters."
-    )
-    group.add_argument(
-        "--y_value",
-        choices=['dinner_score', 'percentile', 'ranking', 'normalized_score',
-                'rank_normalized_score', 'len_response'],
-        default='normalized_score',
-        help="Value to use for y-axis"
-    )
-    group.add_argument(
-        "--display_graph",
-        action="store_true",
-        default=False,
-        help="Whether to display the graph (default: False)"
-    )
-    group.add_argument(
-        "--use_multiple_colors",
-        action="store_true",
-        default=True,
-        help="Use different colors for each box in the plot (default: True)"
-    )
+    group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
+    group.add_argument("--param", choices=['all'] + ALL_GRAPHING_PARAMS,
+                        default='set_size',
+                        help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters.")
+    group.add_argument("--y_value",
+                        choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score',
+                                 'len_response'],
+                        default='normalized_score', help="Value to use for y-axis")
+    group.add_argument("--display_graph", action="store_true", default=False,
+                        help="Whether to display the graph (default: False)")
+    group.add_argument("--use_multiple_colors", action="store_true", default=True,
+                        help="Use different colors for each box in the plot (default: True)")
 
     args = parser.parse_args()
 
-    # Default to print mode
+    # Configure printing
     configure_console(args)
-
     if args.max_str_len:
         set_max_print_len(args.max_str_len)
 
@@ -181,6 +156,8 @@ def main() -> None:
 
     if args.structure:
         print_structure(args, lines)
+    elif args.graph:
+        ...
 
     # The main case, iterate over problems
     else:

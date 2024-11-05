@@ -8,6 +8,8 @@ import numpy as np
 # import seaborn as sns
 from scipy import stats
 
+ALL_GRAPHING_PARAMS = ['bimodal_discount', 'set_size', 'num_people', 'num_interests', 'avg_points', 'think_through',
+              'percent_chain_of_thought']
 
 def get_latest_file(directory):
     return max(
@@ -121,37 +123,19 @@ def create_graph(results, param, y_value, args):
     plt.close()
 
 
-def main():
+def main(args):
     default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
     default_input_file = get_latest_file(default_input_dir)
 
-    parser = argparse.ArgumentParser(description="Create a graph from dinner party evaluation results")
-    parser.add_argument("--input_file", default=default_input_file,
-                        help="Path to the input JSONL file with evaluation results")
-    all_params = ['bimodal_discount', 'set_size', 'num_people', 'num_interests', 'avg_points', 'think_through',
-                  'percent_chain_of_thought']
-    parser.add_argument("--param", choices=['all'] + all_params,
-                        default='set_size',
-                        help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters.")
-    parser.add_argument("--y_value",
-                        choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score',
-                                 'len_response'],
-                        default='normalized_score', help="Value to use for y-axis")
-    parser.add_argument("--display_graph", action="store_true", default=False,
-                        help="Whether to display the graph (default: False)")
-    parser.add_argument("--use_multiple_colors", action="store_true", default=True,
-                        help="Use different colors for each box in the plot (default: True)")
-    args = parser.parse_args()
-
-    print(f"Input file: {args.input_file}")
+    print(f"Input file: {args.file}")
     print(f"Param: {args.param}")
     print(f"Y-value: {args.y_value}")
     print(f"Display graph: {args.display_graph}")
 
-    results = load_results(args.input_file)
+    results = load_results(args.file)
 
     if args.param == 'all':
-        for param in all_params:
+        for param in ALL_GRAPHING_PARAMS:
             print(f"Creating graph for parameter: {param}")
 
             # Check to see if all the values are the same
@@ -167,9 +151,6 @@ def main():
         create_graph(results, args.param, args.y_value, args)
 
     # print the location where these are all saved
-    output_dir = Path(args.input_file).parent / Path(args.input_file).stem
+    output_dir = Path(args.file).parent / Path(args.file).stem
     print(f"\nGraphs saved in: {output_dir}")
 
-
-if __name__ == "__main__":
-    main()
