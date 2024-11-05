@@ -113,6 +113,7 @@ def main() -> None:
     # Create the parser for the "graph" command
     # TODO Make this more generic
     group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
+    group.add_argument("--graph", action="store_true", default=False, help="Create a graph from the data")
     group.add_argument("--param", choices=['all'] + ALL_GRAPHING_PARAMS,
                         default='set_size',
                         help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters.")
