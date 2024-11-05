@@ -18,7 +18,7 @@ from typing import Dict
 from typing import Optional
 from typing import TextIO
 
-from src.printing import print_header_2, print_code, print_text, print_header_3
+from printing import print_header_2, print_code, print_text, print_header_3
 
 
 def process_file(file: TextIO) -> str:
