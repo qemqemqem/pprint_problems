@@ -5,8 +5,8 @@ import json
 import random
 import sys
 
-from src.parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
-from src.printing import (
+from .parsing import process_file, print_json_structure, truncate_strings, print_problem, COMMON_LOCATIONS
+from .printing import (
     print_text, print_header_1, print_code, print_file_output, 
     configure_console, MAX_PRINT_LEN, set_max_print_len
 )
