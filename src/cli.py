@@ -6,28 +6,28 @@ Pretty prints JSONL problem files with optional selective output.
 Here are some recommended ways to use this script:
 
 1. Search for particular problems:
-    python scripts/pprint_problems.py s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl -r --search pig -b
+    python scripts/pprint_problems.py problems.jsonl -r --search "keyword" -b
 
 2. Load a local file:
-    python scripts/pprint_problems.py ~/Downloads/mbpp_healed_test.jsonl --randomize -n 1 --parts code tests
+    python scripts/pprint_problems.py test_problems.jsonl --randomize -n 1 --parts code tests
 
 3. Load a local file with "cat":
-    cat ~/Downloads/mbpp_healed_test.jsonl | grep "pig.*latin" | python scripts/pprint_problems.py -n 1 -p code
+    cat problems.jsonl | grep "search_term" | python scripts/pprint_problems.py -n 1 -p code
 
-4. Load an S3 file:
-    python scripts/pprint_problems.py -r -n 1 s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl
+4. Load and randomize problems:
+    python scripts/pprint_problems.py -r -n 1 problems.jsonl
 
 5. Use some arguments to only load a subset:
     python scripts/pprint_problems.py my_problems.jsonl --n 3 --width 100 --line-numbers --randomize
 
 6. Print out the structure:
-    python scripts/pprint_problems.py --structure s3://int8-datasets/evals/generative/mbpp_healed/v2/test.jsonl
+    python scripts/pprint_problems.py --structure test_data.jsonl
 
 7. Print out the raw JSON:
-    python scripts/pprint_problems.py --n 1 --raw s3://int8-datasets/evals/generative/mbpp_healed/v2/test.jsonl
+    python scripts/pprint_problems.py --n 1 --raw problems.jsonl
 
 8. Manually filter problems with y/n on the keyboard:
-    python scripts/pprint_problems.py s3://int8-shared-internal/andrew/MBPR/uncontaminated_test_broken_gpt35.jsonl --manual-filter -p code broken_diff
+    python scripts/pprint_problems.py problems.jsonl --manual-filter -p code broken_diff
 """
 
 
