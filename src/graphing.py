@@ -302,34 +302,29 @@ def main(args):
     # default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
     # default_input_file = get_latest_file(default_input_dir)
 
-    param = args.parts[0]
-    assert len(args.parts) == 1, f"Invalid number of parts: {args.parts}"
+    params = args.parts
 
     print(f"Input file: {args.file}")
-    print(f"Param: {param}")
+    print(f"Params: {params}")
     print(f"Y-value: {args.y_value}")
     print(f"Display graph: {args.display_graph}")
 
     results = load_results(args.file)
 
-    if param == 'all':
-        print("ALL NOT CURRENTLY SUPPORTED")
-        for param in ALL_GRAPHING_PARAMS:
-            print(f"Creating graph for parameter: {param}")
+    if params[0] == 'all':
+        params = ALL_GRAPHING_PARAMS
 
-            # Check to see if all the values are the same
-            all_values = set()
-            for result in results:
-                all_values.add(result['doc']['scoring_guide']['parameters'][param])
-            if len(all_values) == 1:
-                print(f"  Skipping graph for parameter {param} because all values are the same: {all_values}")
-                continue
+    for param in params:
+        print(f"Creating graph for parameter: {param}")
 
-            if args.stats:
-                print_stats(results, param, args.y_value, args)
-            else:
-                create_graph(results, param, args.y_value, args)
-    else:
+        # Check to see if all the values are the same
+        all_values = set()
+        for result in results:
+            all_values.add(get_value(result, param))
+        if len(all_values) == 1:
+            print(f"  Skipping graph for parameter {param} because all values are the same: {all_values}")
+            continue
+
         if args.stats:
             print_stats(results, param, args.y_value, args)
         else:
