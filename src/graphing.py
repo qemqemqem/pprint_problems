@@ -302,14 +302,18 @@ def main(args):
     # default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
     # default_input_file = get_latest_file(default_input_dir)
 
+    param = args.parts[0]
+    assert len(args.parts) == 1, f"Invalid number of parts: {args.parts}"
+
     print(f"Input file: {args.file}")
-    print(f"Param: {args.param}")
+    print(f"Param: {param}")
     print(f"Y-value: {args.y_value}")
     print(f"Display graph: {args.display_graph}")
 
     results = load_results(args.file)
 
-    if args.param == 'all':
+    if param == 'all':
+        print("ALL NOT CURRENTLY SUPPORTED")
         for param in ALL_GRAPHING_PARAMS:
             print(f"Creating graph for parameter: {param}")
 
@@ -327,6 +331,6 @@ def main(args):
                 create_graph(results, param, args.y_value, args)
     else:
         if args.stats:
-            print_stats(results, args.param, args.y_value, args)
+            print_stats(results, param, args.y_value, args)
         else:
-            create_graph(results, args.param, args.y_value, args)
+            create_graph(results, param, args.y_value, args)

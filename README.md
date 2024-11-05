@@ -43,10 +43,10 @@ Here are some recommended ways to use this script:
     pprint_problems --dir_most_recent my_jsonl_files/ --structure
 
 10. Graph the distribution of a particular key:
-    pprint_problems mydata.jsonl --graph --param vocab_size
+    pprint_problems mydata.jsonl --graph --parts vocab_size
 
 11. Print stats, similarly to graphing:
-    pprint_problems mydata.jsonl --stats --param vocab_size
+    pprint_problems mydata.jsonl --stats --parts vocab_size
 ```
 
 ## License
