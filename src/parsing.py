@@ -19,6 +19,7 @@ from typing import Optional
 from typing import TextIO
 
 from printing import print_header_2, print_code, print_text, print_header_3
+from src.printing import print_header_1, print_text, print_code
 
 
 def process_file(file: TextIO) -> str:
@@ -249,3 +250,55 @@ def truncate_strings(data, max_length):
     else:
         return data
 
+
+def iterate_over_problems(args, lines):
+    problem_number = args.start if args.start else 0  # For the post-loop filtering summary
+    filter_included = 0
+    try:
+        for selection_index, (original_index, line) in enumerate(lines):
+            problem_number += 1
+            if args.renumber:
+                print_header_1(f"Problem {selection_index + 1}")
+            else:
+                print_header_1(f"Problem {original_index}")
+            try:
+                problem = json.loads(line)
+            except json.JSONDecodeError:
+                print_text(f"Problem on line {original_index} is not valid JSON")
+                continue
+            if args.raw:
+                p = problem
+                if args.max_str_len:
+                    p = truncate_strings(p, args.max_str_len)
+                print_code(json.dumps(p, indent=4), print_line_numbers=args.line_numbers, lexer="json")
+            else:
+                print_problem(problem, parts=args.parts, print_line_numbers=args.line_numbers)
+            if args.manual_filter:
+                include = input(f"Include this problem in {args.filter_output}? (y/N/q) ")
+                if include.lower() == "q":
+                    raise KeyboardInterrupt()
+                if include.lower() == "y":
+                    filter_included += 1
+                    with open(args.filter_output, "a") as f:
+                        f.write(json.dumps(problem) + "\n")
+    except KeyboardInterrupt:
+        if args.manual_filter:
+            print_text("")
+            print_header_1("Manual Filtering Statistics")
+            print_text(f"Manually selected {filter_included} problems from {args.file}.")
+            if not args.randomize:
+                print_code(
+                    f"From lines: {args.start} to {problem_number - 1}. Next time use `--start {problem_number - 1}` to resume.",
+                    lexer="markdown",
+                )
+            print_code(
+                f"Output to file: {args.filter_output}, use `pprint_problems {args.filter_output}` to view.",
+                lexer="markdown",
+            )
+
+
+def print_structure(args, lines):
+    print_header_1(f"JSON Structure (problem {lines[0][0]})")
+    problem = json.loads(lines[0][1])
+    structure = print_json_structure(problem)
+    print_code(structure, print_line_numbers=args.line_numbers, lexer="python")
