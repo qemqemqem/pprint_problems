@@ -183,7 +183,7 @@ def create_graph(results, param, y_value, args):
     plt.tight_layout()
 
     # Save the graph as an image
-    output_dir = Path(args.input_file).parent / Path(args.input_file).stem
+    output_dir = Path(args.file).parent / Path(args.file).stem
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / f"{param}_{y_value}.png"
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
