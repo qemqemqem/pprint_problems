@@ -47,7 +47,7 @@ def get_value(result, param):
         raise e
 
 
-def get_data(param, results, y_value):
+def get_data(param, results, y_value, min_n=1):
     param_values = defaultdict(list)
     for i, result in enumerate(results):
         try:
@@ -59,22 +59,26 @@ def get_data(param, results, y_value):
         except KeyError as e:
             print(f"  KeyError: {e}")
             raise e
-    x_data = list(param_values.keys())
-    return param_values, x_data
+    
+    # Get all x values
+    all_x_data = list(param_values.keys())
+    
+    # Filter out groups with insufficient N
+    if min_n > 1:
+        valid_x_data = [x for x in all_x_data if len(param_values[x]) >= min_n]
+        if len(valid_x_data) < len(all_x_data):
+            print(f"\nNote: Excluding groups with N < {min_n}")
+            print(f"Original groups: {len(all_x_data)}, Valid groups: {len(valid_x_data)}")
+        return param_values, valid_x_data
+    
+    return param_values, all_x_data
 
 
 def print_stats(results, param, y_value, args):
-    param_values, x_data = get_data(param, results, y_value)
+    param_values, valid_x_data = get_data(param, results, y_value, args.min_n)
     
     print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title()}")
     print("-" * 80)
-    
-    # Filter out groups with insufficient N
-    if args.min_n > 1:
-        valid_x_data = [x for x in x_data if len(param_values[x]) >= args.min_n]
-        if len(valid_x_data) < len(x_data):
-            print(f"\nNote: Excluding groups with N < {args.min_n}")
-            print(f"Original groups: {len(x_data)}, Valid groups: {len(valid_x_data)}")
     
     # Print summary statistics for each parameter value
     for x in sorted(valid_x_data):
@@ -114,7 +118,7 @@ def print_stats(results, param, y_value, args):
 
 def create_graph(results, param, y_value, args):
     print(f"Creating graph with param: {param}, y_value: {y_value}")
-    param_values, x_data = get_data(param, results, y_value)
+    param_values, x_data = get_data(param, results, y_value, args.min_n)
 
     plt.figure(figsize=(14, 8))  # Larger figure to accommodate additional legend
 
