@@ -28,20 +28,51 @@ def load_results(file_path):
     return results
 
 
-def create_graph(results, param, y_value, args):
-    print(f"Creating graph with param: {param}, y_value: {y_value}")
+def get_value(result, param):
+    try:
+        return result['doc']['scoring_guide']['parameters'][param]
+    except KeyError as e:
+        pass
+    try:
+        return result['doc']['scoring_guide'][param]
+    except KeyError as e:
+        pass
+    try:
+        return result['doc'][param]
+    except KeyError as e:
+        pass
+    try:
+        return result[param]
+    except KeyError as e:
+        print(f"  KeyError: {e}")
+
+
+def get_data(param, results, y_value):
     param_values = defaultdict(list)
     for i, result in enumerate(results):
         try:
-            param_value = result['doc']['scoring_guide']['parameters'][param]
+            param_value = get_value(result, param)
             # For readability, convert integer values to strings
             if param == "think_through":
                 param_value = {0: "No thinking through", 1: "Brief thought", 2: "Deep thought"}[param_value]
             param_values[param_value].append(result[y_value])
         except KeyError as e:
             print(f"  KeyError: {e}")
-
     x_data = list(param_values.keys())
+    return param_values, x_data
+
+
+def print_stats(results, param, y_value, args):
+    param_values, x_data = get_data(param, results, y_value)
+
+
+def create_graph(results, param, y_value, args):
+    if args.stats:
+        print_stats(results, param, y_value, args)
+        return
+
+    print(f"Creating graph with param: {param}, y_value: {y_value}")
+    param_values, x_data = get_data(param, results, y_value)
 
     plt.figure(figsize=(14, 8))  # Larger figure to accommodate additional legend
 
