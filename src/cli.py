@@ -28,6 +28,9 @@ Here are some recommended ways to use this script:
 
 8. Manually filter problems with y/n on the keyboard:
     pprint_problems problems.jsonl --manual-filter -p code broken_diff
+
+9. Use the most recently modified file in a directory:
+    pprint_problems --dir_most_recent my_jsonl_files/ --structure
 """
 
 
