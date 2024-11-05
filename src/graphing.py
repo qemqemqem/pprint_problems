@@ -180,12 +180,10 @@ def main(args):
 
             if args.stats:
                 print_stats(results, param, args.y_value, args)
-                return
             else:
                 create_graph(results, param, args.y_value, args)
     else:
         if args.stats:
             print_stats(results, args.param, args.y_value, args)
-            return
         else:
             create_graph(results, args.param, args.y_value, args)
