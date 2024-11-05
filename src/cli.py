@@ -120,13 +120,13 @@ def main() -> None:
     group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
     group.add_argument("--graph", action="store_true", default=False, help="Create a graph from the data")
     group.add_argument("--stats", action="store_true", default=False, help="Print out statistics about the data. This is the same as `--graph`, but without the graph, just the numbers.")
-    group.add_argument("--param", choices=['all'] + ALL_GRAPHING_PARAMS,
+    group.add_argument("--param",
+                       # choices=['all'] + ALL_GRAPHING_PARAMS,
                         default='set_size',
                         help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters.")
     group.add_argument("--y_value",
-                        choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score',
-                                 'len_response'],
-                        default='normalized_score', help="Value to use for y-axis")
+                        # choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score', 'len_response'],
+                        default='correct', help="Value to use for y-axis. This can be any numeric value in the top level of the jsonl.")
     group.add_argument("--display_graph", action="store_true", default=False,
                         help="Whether to display the graph (default: False)")
     group.add_argument("--use_multiple_colors", action="store_true", default=True,

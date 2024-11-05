@@ -44,7 +44,7 @@ def get_value(result, param):
     try:
         return result[param]
     except KeyError as e:
-        print(f"  KeyError: {e}")
+        raise e
 
 
 def get_data(param, results, y_value):
@@ -58,6 +58,7 @@ def get_data(param, results, y_value):
             param_values[param_value].append(result[y_value])
         except KeyError as e:
             print(f"  KeyError: {e}")
+            raise e
     x_data = list(param_values.keys())
     return param_values, x_data
 
@@ -67,10 +68,6 @@ def print_stats(results, param, y_value, args):
 
 
 def create_graph(results, param, y_value, args):
-    if args.stats:
-        print_stats(results, param, y_value, args)
-        return
-
     print(f"Creating graph with param: {param}, y_value: {y_value}")
     param_values, x_data = get_data(param, results, y_value)
 
@@ -153,6 +150,10 @@ def create_graph(results, param, y_value, args):
 
     plt.close()
 
+    # print the location where these are all saved
+    output_dir = Path(args.file).parent / Path(args.file).stem
+    print(f"\nGraphs saved in: {output_dir}")
+
 
 def main(args):
     # default_input_dir = Path(__file__).parents[3] / "tasks" / "dinner_party" / "results"
@@ -177,11 +178,14 @@ def main(args):
                 print(f"  Skipping graph for parameter {param} because all values are the same: {all_values}")
                 continue
 
-            create_graph(results, param, args.y_value, args)
+            if args.stats:
+                print_stats(results, param, args.y_value, args)
+                return
+            else:
+                create_graph(results, param, args.y_value, args)
     else:
-        create_graph(results, args.param, args.y_value, args)
-
-    # print the location where these are all saved
-    output_dir = Path(args.file).parent / Path(args.file).stem
-    print(f"\nGraphs saved in: {output_dir}")
-
+        if args.stats:
+            print_stats(results, args.param, args.y_value, args)
+            return
+        else:
+            create_graph(results, args.param, args.y_value, args)
