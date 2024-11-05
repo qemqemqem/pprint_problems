@@ -51,7 +51,16 @@ def main() -> None:
         epilog=epilog.strip(),
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    group = parser.add_argument_group("Main Arguments")
+
+    # Create subparsers for different modes
+    subparsers = parser.add_subparsers(dest='mode', help='Mode of operation')
+
+    # Create the parser for the "print" command (default behavior)
+    print_parser = subparsers.add_parser('print', help='Pretty print JSONL files (default mode)')
+    
+    # Add all existing arguments to both main parser and print parser for backwards compatibility
+    for parser_target in [parser, print_parser]:
+        group = parser_target.add_argument_group("Main Arguments")
     group.add_argument(
         "file",
         nargs="?",
@@ -107,8 +116,49 @@ def main() -> None:
 
     # group = parser.add_argument_group("Miscellaneous Options")
 
+    # Create the parser for the "graph" command
+    graph_parser = subparsers.add_parser('graph', help='Create graphs from JSONL files')
+    graph_parser.add_argument(
+        "--input_file",
+        type=str,
+        help="Path to the input JSONL file with evaluation results"
+    )
+    graph_parser.add_argument(
+        "--param",
+        choices=['all', 'bimodal_discount', 'set_size', 'num_people', 'num_interests', 
+                'avg_points', 'think_through', 'percent_chain_of_thought'],
+        default='set_size',
+        help="Parameter to use for x-axis. Use 'all' to generate graphs for all parameters."
+    )
+    graph_parser.add_argument(
+        "--y_value",
+        choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 
+                'rank_normalized_score', 'len_response'],
+        default='normalized_score',
+        help="Value to use for y-axis"
+    )
+    graph_parser.add_argument(
+        "--display_graph",
+        action="store_true",
+        default=False,
+        help="Whether to display the graph (default: False)"
+    )
+    graph_parser.add_argument(
+        "--use_multiple_colors",
+        action="store_true",
+        default=True,
+        help="Use different colors for each box in the plot (default: True)"
+    )
+
     args = parser.parse_args()
 
+    # Handle the different modes
+    if args.mode == 'graph':
+        from graphing import main as graph_main
+        graph_main()
+        return
+    
+    # Default to print mode
     configure_console(args)
 
     if args.max_str_len:
