@@ -69,9 +69,14 @@ def get_data(param, results, y_value, min_n=1):
         if len(valid_x_data) < len(all_x_data):
             print(f"\nNote: Excluding groups with N < {min_n}")
             print(f"Original groups: {len(all_x_data)}, Valid groups: {len(valid_x_data)}")
-        return param_values, valid_x_data
+    else:
+        valid_x_data = all_x_data
+
+    # Sort x values if they're all numeric
+    if all(isinstance(x, (int, float)) for x in valid_x_data):
+        valid_x_data.sort()
     
-    return param_values, all_x_data
+    return param_values, valid_x_data
 
 
 def print_stats(results, param, y_value, args):
