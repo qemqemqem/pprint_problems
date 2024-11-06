@@ -91,17 +91,7 @@ def get_data(param, results, y_value, min_n=1):
     return param_values, valid_x_data
 
 
-def print_full_combinatoric_stats(results, param, y_value, args):
-    # Get all unique values for each parameter
-    param_values = defaultdict(set)
-    for result in results:
-        for p in ALL_GRAPHING_PARAMS:
-            try:
-                val = get_value(result, p)
-                param_values[p].add(val)
-            except KeyError:
-                continue
-
+def print_full_combinatoric_stats(results, params, y_value, args):
     # Create combinations counter
     combinations = defaultdict(int)
     total_results = 0
@@ -110,7 +100,7 @@ def print_full_combinatoric_stats(results, param, y_value, args):
         try:
             # Build combination tuple
             combo = []
-            for p in sorted(ALL_GRAPHING_PARAMS):
+            for p in params:
                 try:
                     val = get_value(result, p)
                     combo.append((p, val))
@@ -121,16 +111,6 @@ def print_full_combinatoric_stats(results, param, y_value, args):
             total_results += 1
         except KeyError:
             continue
-
-    # Print statistics
-    print("\nFull Combinatoric Analysis")
-    print("=" * 80)
-    
-    # Print parameter value ranges
-    print("\nParameter Ranges:")
-    for p in sorted(param_values.keys()):
-        values = sorted(param_values[p])
-        print(f"{p:25}: {values}")
 
     # Print each combination and its count
     print("\nCombinations:")
@@ -380,7 +360,7 @@ def main(args):
         params = ALL_GRAPHING_PARAMS
 
     if args.stats and args.full_combinatoric:
-        print_full_combinatoric_stats(results, params[0], args.y_value, args)
+        print_full_combinatoric_stats(results, params, args.y_value, args)
         return
 
     for param in params:
