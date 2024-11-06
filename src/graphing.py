@@ -8,6 +8,8 @@ import numpy as np
 # import seaborn as sns
 from scipy import stats
 
+from printing import print_header_1
+
 ALL_GRAPHING_PARAMS = ['bimodal_discount', 'set_size', 'num_people', 'num_interests', 'avg_points', 'think_through',
               'percent_chain_of_thought']
 
@@ -113,12 +115,12 @@ def print_full_combinatoric_stats(results, params, y_value, args):
             continue
 
     # Print each combination and its count
-    print("\nCombinations:")
-    print(combinations)
+    print_header_1("Combinations:")
     for combo, count in sorted(combinations.items(), key=lambda x: (-x[1], x[0])):
-        print(f"\nCount: {count} ({count/total_results*100:.1f}%)")
+        print()
         for param_name, value in combo:
-            print(f"  {param_name:25}: {value}")
+            print(f"{param_name:25}: {value}")
+        print(f"Count: {count} ({count/total_results*100:.1f}%)")
 
 
 def print_stats(results, param, y_value, args):
