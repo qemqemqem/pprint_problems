@@ -119,10 +119,7 @@ def main() -> None:
         help='Output file for filtered problems. Defaults to text but will write html if the file name ends with ".html". Overwrites.',
     )
 
-    # group = parser.add_argument_group("Miscellaneous Options")
-
-    # Create the parser for the "graph" command
-    # TODO Make this more generic
+    # Graphing
     group = parser.add_argument_group('Graphing', 'Options for creating graphs from the data')
     group.add_argument("--graph", action="store_true", default=False, help="Create a graph from the data")
     group.add_argument("--graph_type", type=str, choices=["default", "box", "binary"], default="default", help="Type of graph to create. Default is box, unless the data appears to be binary.")
@@ -134,11 +131,15 @@ def main() -> None:
     group.add_argument("--min_n", type=int, default=0, help="Ignore groups with fewer than this many entries when graphing and in stats.")
     group.add_argument("--y_value",
                         # choices=['dinner_score', 'percentile', 'ranking', 'normalized_score', 'rank_normalized_score', 'len_response'],
-                        default='correct', help="Value to use for y-axis. This can be any numeric value in the top level of the jsonl.")
+                        default='', help="Value to use for y-axis. This can be any numeric value in the top level of the jsonl.")
     group.add_argument("--display_graph", action="store_true", default=False,
                         help="Whether to display the graph (default: False)")
     group.add_argument("--use_multiple_colors", action="store_true", default=True,
                         help="Use different colors for each box in the plot (default: True)")
+
+    # Summary statistics
+    group = parser.add_argument_group("Miscellaneous Options")
+    group.add_argument("--summary", action="store_true", help="Print summary statistics about the data")
 
     args = parser.parse_args()
 
@@ -186,6 +187,8 @@ def main() -> None:
         graph_main(args)
     elif args.graph:
         graph_main(args)
+    elif args.summary:
+        raise NotImplementedError("Summary statistics are not yet implemented.")
 
     # The main case, iterate over problems
     else:

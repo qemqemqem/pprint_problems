@@ -1,3 +1,5 @@
+from typing import Optional
+
 try:
     from rich.console import Console
     from rich.markdown import Markdown
@@ -15,7 +17,7 @@ if USE_RICH:
 MAX_PRINT_LEN = None
 
 
-def set_max_print_len(length: int | None) -> None:
+def set_max_print_len(length: Optional[int]) -> None:
     global MAX_PRINT_LEN 
     MAX_PRINT_LEN = length
 

@@ -29,6 +29,15 @@ def load_results(file_path):
 
 
 def get_value(result, param):
+    if "/" in param:
+        parts = param.split("/")
+        while parts:
+            try:
+                result = result[parts.pop(0)]
+            except KeyError as e:
+                raise e
+        return result
+
     try:
         return result['doc']['scoring_guide']['parameters'][param]
     except KeyError as e:
@@ -55,7 +64,10 @@ def get_data(param, results, y_value, min_n=1):
             # For readability, convert integer values to strings
             if param == "think_through":
                 param_value = {0: "No thinking through", 1: "Brief thought", 2: "Deep thought"}[param_value]
-            param_values[param_value].append(result[y_value])
+            if y_value:
+                param_values[param_value].append(result[y_value])
+            else:
+                param_values[param_value].append(1)
         except KeyError as e:
             print(f"  KeyError: {e}")
             raise e
@@ -90,11 +102,12 @@ def print_stats(results, param, y_value, args):
         values = param_values[x]
         print(f"\nGroup: {x}")
         print(f"  N: {len(values)}")
-        print(f"  Mean: {np.mean(values):.3f}")
-        print(f"  Median: {np.median(values):.3f}")
-        print(f"  Std Dev: {np.std(values):.3f}")
-        print(f"  Min: {np.min(values):.3f}")
-        print(f"  Max: {np.max(values):.3f}")
+        if y_value:
+            print(f"  Mean: {np.mean(values):.3f}")
+            print(f"  Median: {np.median(values):.3f}")
+            print(f"  Std Dev: {np.std(values):.3f}")
+            print(f"  Min: {np.min(values):.3f}")
+            print(f"  Max: {np.max(values):.3f}")
     
     # If we have numeric x values and more than one group, perform regression analysis
     if len(valid_x_data) > 1 and all(isinstance(x, (int, float)) for x in valid_x_data):
@@ -113,7 +126,7 @@ def print_stats(results, param, y_value, args):
         print(f"  Standard Error: {std_err:.3f}")
     
     # If we have more than one group, perform ANOVA
-    if len(valid_x_data) > 1:
+    if len(valid_x_data) > 1 and y_value:
         groups = [param_values[x] for x in valid_x_data]
         f_stat, anova_p = stats.f_oneway(*groups)
         print(f"\nOne-way ANOVA:")
@@ -124,6 +137,8 @@ def print_stats(results, param, y_value, args):
 def create_graph(results, param, y_value, args):
     print(f"Creating graph with param: {param}, y_value: {y_value}")
     param_values, x_data = get_data(param, results, y_value, args.min_n)
+
+    assert y_value, "No y_value specified. You probably want to run this command with `--y_value=correct` or similar."
 
     plt.figure(figsize=(14, 8))  # Larger figure to accommodate additional legend
 
@@ -315,8 +330,6 @@ def main(args):
         params = ALL_GRAPHING_PARAMS
 
     for param in params:
-        print(f"Creating graph for parameter: {param}")
-
         # Check to see if all the values are the same
         all_values = set()
         for result in results:
