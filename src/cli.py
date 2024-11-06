@@ -78,7 +78,7 @@ def main() -> None:
         "--parts",
         nargs="*",
         type=str,
-        help=f'Optional list of parts to print. Will attempt to find useful defaults if not specified. Possible values: {list(COMMON_LOCATIONS.keys())}, or any other top level JSONL key. You can use a slash, like "foo/bar" to indicate a nested key like problem["foo"]["bar"].',
+        help=f'Optional list of parts to print. Defaults to "all". Possible values: {list(COMMON_LOCATIONS.keys())}, or any other top level JSONL key. You can use a slash, like "foo/bar" to indicate a nested key like problem["foo"]["bar"].',
     )
     group = parser.add_argument_group("Line Selection")
     group.add_argument("-n", "--number", type=int, help="Number of problems to print (defaults to all)")

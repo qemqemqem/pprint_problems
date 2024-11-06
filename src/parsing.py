@@ -39,6 +39,8 @@ COMMON_LOCATIONS: dict[str, list[str]] = {
     "tests_pass": ["tests_pass"],
     "tests_error": ["tests_error"],
     "attempts": ["attempts"],
+    "answer": ["answer", "resps"],
+    "is_correct": ["is_correct", "correct"],
 }
 
 
@@ -84,14 +86,32 @@ def build_parts(problem: dict, parts: list[str]) -> dict[str, Any]:
     return results
 
 
+def get_all_keys(problem: dict) -> list[str]:
+    places = list(problem.keys())
+    keys = []
+    while places:
+        place = places.pop()
+        if isinstance(problem[place], dict):
+            # Recursion
+            keys.extend([place + "/" + key for key in get_all_keys(problem[place])])
+        else:
+            keys.append(place)
+    # Reverse so that the order is preserved
+    keys.reverse()
+    return keys
+
+
 def print_problem(orig_problem, parts: Optional[list[str]] = None, print_line_numbers: bool = False) -> None:
     """
     Pretty print a problem, with an option to specify which parts are printed. Uses the `rich` library if installed. It attempts to print code blocks with syntax highlighting, and tests with pass/fail status.
     """
     using_default_parts = False
     if parts is None:
-        parts = ["prompt", "code", "tests", "attempts"]
+        # parts = ["prompt", "code", "tests", "attempts"]  # TODO This was an old attempt to present a good default
+        parts = ["all"]
         using_default_parts = True
+    if "all" in parts:
+        parts = get_all_keys(orig_problem)
     problem = build_parts(orig_problem, parts=parts)  # This is where we look for alternative locations
     for part in parts:
         if (
