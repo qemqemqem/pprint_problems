@@ -96,6 +96,9 @@ def print_stats(results, param, y_value, args):
     
     print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title()}")
     print("-" * 80)
+
+    if args.full_combinatoric:
+        ...
     
     # Print summary statistics for each parameter value
     for x in sorted(valid_x_data):
