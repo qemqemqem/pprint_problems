@@ -92,7 +92,72 @@ def get_data(param, results, y_value, min_n=1):
 
 
 def print_full_combinatoric_stats(results, param, y_value, args):
-    ...
+    # Get all unique values for each parameter
+    param_values = defaultdict(set)
+    for result in results:
+        for p in ALL_GRAPHING_PARAMS:
+            try:
+                val = get_value(result, p)
+                param_values[p].add(val)
+            except KeyError:
+                continue
+
+    # Create combinations counter
+    combinations = defaultdict(int)
+    total_results = 0
+
+    for result in results:
+        try:
+            # Build combination tuple
+            combo = []
+            for p in sorted(ALL_GRAPHING_PARAMS):
+                try:
+                    val = get_value(result, p)
+                    combo.append((p, val))
+                except KeyError:
+                    continue
+            combo = tuple(combo)
+            combinations[combo] += 1
+            total_results += 1
+        except KeyError:
+            continue
+
+    # Print statistics
+    print("\nFull Combinatoric Analysis")
+    print("=" * 80)
+    
+    # Print parameter value ranges
+    print("\nParameter Ranges:")
+    for p in sorted(param_values.keys()):
+        values = sorted(param_values[p])
+        print(f"{p:25}: {values}")
+
+    # Print combination statistics
+    print(f"\nTotal unique combinations found: {len(combinations)}")
+    print(f"Total results analyzed: {total_results}")
+    
+    # Calculate theoretical maximum combinations
+    max_combinations = 1
+    for p in param_values:
+        max_combinations *= len(param_values[p])
+    print(f"Theoretical maximum combinations: {max_combinations}")
+    
+    # Print top combinations by frequency
+    print("\nMost Common Combinations:")
+    print("-" * 80)
+    for combo, count in sorted(combinations.items(), key=lambda x: (-x[1], x[0]))[:10]:
+        print(f"\nCount: {count} ({count/total_results*100:.1f}%)")
+        for param_name, value in combo:
+            print(f"  {param_name:25}: {value}")
+    
+    # Print statistics about combination frequencies
+    counts = list(combinations.values())
+    print("\nCombination Frequency Statistics:")
+    print(f"Mean occurrences per combination: {np.mean(counts):.2f}")
+    print(f"Median occurrences per combination: {np.median(counts):.2f}")
+    print(f"Min occurrences: {min(counts)}")
+    print(f"Max occurrences: {max(counts)}")
+    print("=" * 80)
 
 
 def print_stats(results, param, y_value, args):
