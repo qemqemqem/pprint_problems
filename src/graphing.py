@@ -132,32 +132,13 @@ def print_full_combinatoric_stats(results, param, y_value, args):
         values = sorted(param_values[p])
         print(f"{p:25}: {values}")
 
-    # Print combination statistics
-    print(f"\nTotal unique combinations found: {len(combinations)}")
-    print(f"Total results analyzed: {total_results}")
-    
-    # Calculate theoretical maximum combinations
-    max_combinations = 1
-    for p in param_values:
-        max_combinations *= len(param_values[p])
-    print(f"Theoretical maximum combinations: {max_combinations}")
-    
-    # Print top combinations by frequency
-    print("\nMost Common Combinations:")
-    print("-" * 80)
-    for combo, count in sorted(combinations.items(), key=lambda x: (-x[1], x[0]))[:10]:
+    # Print each combination and its count
+    print("\nCombinations:")
+    print(combinations)
+    for combo, count in sorted(combinations.items(), key=lambda x: (-x[1], x[0])):
         print(f"\nCount: {count} ({count/total_results*100:.1f}%)")
         for param_name, value in combo:
             print(f"  {param_name:25}: {value}")
-    
-    # Print statistics about combination frequencies
-    counts = list(combinations.values())
-    print("\nCombination Frequency Statistics:")
-    print(f"Mean occurrences per combination: {np.mean(counts):.2f}")
-    print(f"Median occurrences per combination: {np.median(counts):.2f}")
-    print(f"Min occurrences: {min(counts)}")
-    print(f"Max occurrences: {max(counts)}")
-    print("=" * 80)
 
 
 def print_stats(results, param, y_value, args):
@@ -400,6 +381,7 @@ def main(args):
 
     if args.stats and args.full_combinatoric:
         print_full_combinatoric_stats(results, params[0], args.y_value, args)
+        return
 
     for param in params:
         # Check to see if all the values are the same
