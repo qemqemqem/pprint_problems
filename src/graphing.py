@@ -399,7 +399,7 @@ def main(args):
         params = ALL_GRAPHING_PARAMS
 
     if args.stats and args.full_combinatoric:
-        print_full_combinatoric_stats(results, param, args.y_value, args)
+        print_full_combinatoric_stats(results, params[0], args.y_value, args)
 
     for param in params:
         # Check to see if all the values are the same
