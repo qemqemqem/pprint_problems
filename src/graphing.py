@@ -91,15 +91,16 @@ def get_data(param, results, y_value, min_n=1):
     return param_values, valid_x_data
 
 
+def print_full_combinatoric_stats(results, param, y_value, args):
+    ...
+
+
 def print_stats(results, param, y_value, args):
     param_values, valid_x_data = get_data(param, results, y_value, args.min_n)
     
-    print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title()}")
+    print(f"\nStatistical Analysis for {param.replace('_', ' ').title()} vs {y_value.replace('_', ' ').title() if y_value else 'Count'}")
     print("-" * 80)
 
-    if args.full_combinatoric:
-        ...
-    
     # Print summary statistics for each parameter value
     for x in sorted(valid_x_data):
         values = param_values[x]
@@ -331,6 +332,9 @@ def main(args):
 
     if params[0] == 'all':
         params = ALL_GRAPHING_PARAMS
+
+    if args.stats and args.full_combinatoric:
+        print_full_combinatoric_stats(results, param, args.y_value, args)
 
     for param in params:
         # Check to see if all the values are the same

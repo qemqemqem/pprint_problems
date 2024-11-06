@@ -136,6 +136,7 @@ def main() -> None:
                         help="Whether to display the graph (default: False)")
     group.add_argument("--use_multiple_colors", action="store_true", default=True,
                         help="Use different colors for each box in the plot (default: True)")
+    group.add_argument("--full_combinatoric", action="store_true", default=False, help="Give stats for all possible combinations of parameters, only usable with `--stats`.")
 
     # Summary statistics
     group = parser.add_argument_group("Miscellaneous Options")
