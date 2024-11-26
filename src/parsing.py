@@ -227,19 +227,15 @@ class DataRange:
         self.values = []
 
     def __str__(self) -> str:
-        # Check if there is exactly 1 distinct value
-        # if len(set(self.values)) == 1:
-        #     return f"all values are {self.values[0]}"
         try:
             if all(isinstance(value, list) for value in self.values):
                 # Check this first, because lists aren't hashable
-                return f"Lengths: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
+                return f"lengths: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
             if len(set(self.values)) <= 3:
                 # Calculate counts of each value
                 counts = {value: self.values.count(value) for value in set(self.values)}
                 percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
                 return ", ".join([f"{percentages[value] * 100:.0f}% {value}" for value in sorted(counts.keys())])
-                # return f"{percentages[min(self.values)] * 100:.0f}% {min(self.values)} and {percentages[max(self.values)] * 100:.0f}% {max(self.values)}"
             if all(isinstance(value, (int, float)) for value in self.values):
                 return f"{min(self.values)} to {max(self.values)}, avg: {sum(self.values) / len(self.values)}"
             if all(isinstance(value, str) for value in self.values):
