@@ -73,9 +73,9 @@ def main() -> None:
         nargs="?",
         type=str,
         default=sys.stdin,
-        help="The file to process. This may be an S3 location. Defaults to stdin.",
+        help="The file to process. This may be an S3 location. Defaults to stdin. If you pass in a directory, this will process the most recently modified jsonl file in that directory.",
     )
-    group.add_argument("--dir_most_recent", type=str, help="If set, the most recently modified jsonl file in this dir will be used as the file.")
+    group.add_argument("--dir_most_recent", type=str, help="Deprecated. You can now pass a directory directly as the file without this flag.")
     group.add_argument(
         "-p",
         "--parts",
@@ -154,13 +154,16 @@ def main() -> None:
         set_max_print_len(args.max_str_len)
 
     # Check args.dir_most_recent
-    if args.dir_most_recent:
-        assert args.file == sys.stdin, "Cannot specify both --dir_most_recent and a file."
+    if os.path.isdir(args.file) or args.dir_most_recent:
+        if os.path.isdir(args.file):
+            args.dir_most_recent = args.file
+        else:
+            assert args.file == sys.stdin, "Cannot specify both --dir_most_recent and a file."
         most_recent_file = max(
             (os.path.join(root, f) for root, _, files in os.walk(args.dir_most_recent) for f in files if f.endswith('.jsonl')),
             key=os.path.getmtime
         )
-        print(f"Using most recently modified file: {most_recent_file}")
+        print(f"Using most recently modified jsonl file: {most_recent_file}")
         args.file = most_recent_file
 
     if args.file == sys.stdin:
