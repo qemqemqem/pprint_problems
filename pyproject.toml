@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pprint_problems"
-version = "0.1.4"
+version = "0.1.5"
 authors = [
   { name="Andrew Keenan Richardson", email="richardson.andrew@gmail.com" },
 ]
@@ -17,7 +17,8 @@ dependencies = [
     "rich>=13.9.4",
     "scipy>=1.8.0",
     "Pillow>=10.0.0",
-    "kiwisolver>=1.4.0"
+    "kiwisolver>=1.4.0",
+    "cycler>=0.10.0",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
