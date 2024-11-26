@@ -308,12 +308,13 @@ def print_json_structure(data: Dict[str, Any], indent: int = 1, keys: list[dict]
 
 
 def print_structure(args, lines: list[tuple[int, str]], print_data_ranges: bool = False):
-    print_header_1(f"JSON Structure (problem {lines[0][0]})")
+    if print_data_ranges:
+        print_header_1(f"JSON Structure (problem {lines[0][0]}), with Data Ranges from {len(lines)} Samples")
+    else:
+        print_header_1(f"JSON Structure (problem {lines[0][0]})")
     data_ranges = get_data_ranges([json.loads(line[1]) for line in lines]) if print_data_ranges else None
     problem = json.loads(lines[0][1])
     structure = print_json_structure(problem, data_ranges=data_ranges)
-    if print_data_ranges:
-        print_text(f"Structure of problem {lines[0][0]}, with data ranges from {len(lines)} samples")
     print_code(structure, print_line_numbers=args.line_numbers, lexer="python")
 
 

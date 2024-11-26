@@ -55,6 +55,68 @@ See this list of commands and more documentation:
     pprint_problems mydata.jsonl --structure --ranges
 ```
 
+### Structure
+
+Here's an example of how to use this program to print out the structure of a dataset:
+
+```bash
+pprint_problems mydata.jsonl --structure --ranges
+```
+
+Which will yield something like the following:
+
+```bash
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                           JSON Structure (problem 0), with Data Ranges from 50 Samples                            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+{
+    "doc_id": int (0 to 49, avg: 24.5)
+    "doc": dict (2 items)
+    {
+        "question": str (322 characters) (50 distinct values, length: 200 to 1845)
+        "scoring_guide": dict (14 items)
+        {
+            "premises": list[list[str]] (2 items) (Lengths: 2 to 2)
+            "full_prose": str (322 characters) (50 distinct values, length: 200 to 1845)
+            "question_conclusion": list[str] (2 items) (Lengths: 2 to 2)
+            "etr_conclusion": list[str] (2 items) (Lengths: 2 to 2)
+            "etr_conclusion_is_categorical": bool (74% False, 26% True)
+            "question_conclusion_is_etr_conclusion": bool (100% True)
+            "classically_valid_conclusion": bool (80% False, 20% True)
+            "vocab_size": int (2 to 6, avg: 3.74)
+            "max_disjuncts": int (1 to 12, avg: 3.6)
+            "num_variables": int (2 to 11, avg: 6.36)
+            "num_disjuncts": int (2 to 6, avg: 4.06)
+            "num_premises": int (100% 2)
+            "etr_answer": str (3 characters) (74% NO, 26% YES)
+            "logically_correct_answer": str (2 characters) (80% NO, 20% YES)
+        }
+    }
+    "target": str (1197 characters) (50 distinct values, length: 844 to 7552)
+    "arguments": dict (1 items)
+    {
+        "gen_args_0": dict (2 items)
+        {
+            "arg_0": list[str] (1 items) (Lengths: 1 to 1)
+            "arg_1": dict (4 items)
+            {
+                "until": list[str] (1 items) (Lengths: 1 to 1)
+                "do_sample": bool (100% False)
+                "temperature": float (100% 0.2)
+                "max_gen_toks": int (100% 2000)
+            }
+        }
+    }
+    "resps": list[list[str]] (1 items) (Lengths: 1 to 1)
+    "filtered_resps": list[str] (1 items) (Lengths: 1 to 1)
+    "doc_hash": str (64 characters) (50 distinct values, length: 64 to 64)
+    "prompt_hash": str (64 characters) (50 distinct values, length: 64 to 64)
+    "target_hash": str (64 characters) (50 distinct values, length: 64 to 64)
+    "correct": float (70% 0.0, 30% 1.0)
+    "len_response": int (14% 2, 86% 3)
+}
+```
+
 ## License
 
 This project is licensed under the terms of the MIT license.
