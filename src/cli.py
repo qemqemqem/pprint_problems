@@ -99,6 +99,7 @@ def main() -> None:
         action="store_true",
         help="Print the structure of the loaded data instead of printing the contents",
     )
+    group.add_argument("--ranges", action="store_true", help="In combination with --structure, print the ranges of the data.")
     group.add_argument(
         "--raw",
         action="store_true",
@@ -183,7 +184,7 @@ def main() -> None:
         lines = lines[: args.number]
 
     if args.structure:
-        print_structure(args, lines)
+        print_structure(args, lines, args.ranges)
     elif args.stats:
         graph_main(args)
     elif args.graph:

@@ -8,7 +8,7 @@ version = "0.1.5"
 authors = [
   { name="Andrew Keenan Richardson", email="richardson.andrew@gmail.com" },
 ]
-description = "Alternative to the `jq` command that's a bit optimized for LLM eval datasets in jsonl format."
+description = "Used to print entries from jsonl files, developed with LLM evals in mind."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [

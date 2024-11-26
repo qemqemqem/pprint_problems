@@ -220,8 +220,56 @@ def get_type(value: Any) -> str:
     return type(value).__name__
 
 
-def print_json_structure(data: Dict[str, Any], indent: int = 1) -> str:
+class DataRange:
+    """A class to represent a range of data values, for stats printing"""
+
+    def __init__(self):
+        self.values = []
+
+    def __str__(self) -> str:
+        # Check if there is exactly 1 distinct value
+        if len(set(self.values)) == 1:
+            return f"all values are {self.values[0]}"
+        if len(set(self.values)) == 2:
+            # Calculate counts of each value
+            counts = {value: self.values.count(value) for value in set(self.values)}
+            percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
+            return f"{percentages[min(self.values)] * 100:.0f}% {min(self.values)} and {percentages[max(self.values)] * 100:.0f}% {max(self.values)}"
+        if all(isinstance(value, (int, float)) for value in self.values):
+            return f"{min(self.values)} to {max(self.values)}, avg: {sum(self.values) / len(self.values)}"
+
+        # No real fallback
+        return ""
+
+
+def add_to_data_ranges(data: dict[str, Any], keys: list[str], value_stats: dict[str, DataRange]) -> None:
+    # Recursive
+    for key, value in data.items():
+        key_str = "::".join(keys + [key])
+        if isinstance(value, dict):
+            add_to_data_ranges(value, keys + [key], value_stats)
+        elif isinstance(value, list):
+            pass  # Not sure what to do with a list
+        else:
+            if key_str not in value_stats:
+                value_stats[key_str] = DataRange()
+            value_stats[key_str].values.append(value)
+
+
+def get_data_ranges(data: list[dict[str, Any]]) -> dict[str, DataRange]:
+    data_ranges = {}
+    for item in data:
+        add_to_data_ranges(item, [], data_ranges)
+
+    return data_ranges
+
+
+def print_json_structure(data: Dict[str, Any], indent: int = 1, keys: list[dict] = None, data_ranges: dict[str, DataRange] = None) -> str:
     """Recursively print the structure of a JSON object."""
+    if keys is None:
+        keys = []
+    if data_ranges is None:
+        data_ranges = {}
     s = "    " * (indent - 1) + "{\n"
     if "__type" in data:
         s += "    " * indent + f'"__type": {data["__type"]}\n'
@@ -235,17 +283,28 @@ def print_json_structure(data: Dict[str, Any], indent: int = 1) -> str:
             s += "    " * indent + f'"{key}": {the_type} ({len(value)} items)\n'
         elif isinstance(value, dict):
             s += "    " * indent + f'"{key}": {the_type} ({len(value)} items)\n'
+        elif isinstance(value, (bool, int, float)):
+            data_range = data_ranges.get("::".join(keys + [key]), None)
+            data_range_str = f"({data_range.__str__()})" if data_range else ""
+            s += "    " * indent + f'"{key}": {the_type} {data_range_str}\n'
         else:
             s += "    " * indent + f'"{key}": {the_type}\n'
-        # Recursion
         if isinstance(value, dict):
-            s += print_json_structure(value, indent + 1) + "\n"
+            s += print_json_structure(value, indent + 1, keys=keys + [key], data_ranges=data_ranges) + "\n"
         elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
             s += "    " * indent + f"[\n"
-            s += print_json_structure(value[0], indent + 2) + "\n"
+            s += print_json_structure(value[0], indent + 2, keys=keys + [key], data_ranges=data_ranges) + "\n"
             s += "    " * (indent + 1) + f"... ({len(value) - 1} more items)\n"
             s += "    " * (indent) + f"]\n"
     return s + "    " * (indent - 1) + "}"
+
+
+def print_structure(args, lines: list[tuple[int, str]], print_data_ranges: bool = False):
+    print_header_1(f"JSON Structure (problem {lines[0][0]})")
+    data_ranges = get_data_ranges([json.loads(line[1]) for line in lines]) if print_data_ranges else None
+    problem = json.loads(lines[0][1])
+    structure = print_json_structure(problem, data_ranges=data_ranges)
+    print_code(structure, print_line_numbers=args.line_numbers, lexer="python")
 
 
 def remove_type_keys(data: Any) -> Any:
@@ -315,10 +374,3 @@ def iterate_over_problems(args, lines):
                 f"Output to file: {args.filter_output}, use `pprint_problems {args.filter_output}` to view.",
                 lexer="markdown",
             )
-
-
-def print_structure(args, lines):
-    print_header_1(f"JSON Structure (problem {lines[0][0]})")
-    problem = json.loads(lines[0][1])
-    structure = print_json_structure(problem)
-    print_code(structure, print_line_numbers=args.line_numbers, lexer="python")
