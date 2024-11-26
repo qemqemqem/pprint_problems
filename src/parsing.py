@@ -228,18 +228,27 @@ class DataRange:
 
     def __str__(self) -> str:
         # Check if there is exactly 1 distinct value
-        if len(set(self.values)) == 1:
-            return f"all values are {self.values[0]}"
-        if len(set(self.values)) == 2:
-            # Calculate counts of each value
-            counts = {value: self.values.count(value) for value in set(self.values)}
-            percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
-            return f"{percentages[min(self.values)] * 100:.0f}% {min(self.values)} and {percentages[max(self.values)] * 100:.0f}% {max(self.values)}"
-        if all(isinstance(value, (int, float)) for value in self.values):
-            return f"{min(self.values)} to {max(self.values)}, avg: {sum(self.values) / len(self.values)}"
-
-        # No real fallback
-        return ""
+        # if len(set(self.values)) == 1:
+        #     return f"all values are {self.values[0]}"
+        try:
+            if all(isinstance(value, list) for value in self.values):
+                # Check this first, because lists aren't hashable
+                return f"Lengths: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
+            if len(set(self.values)) <= 3:
+                # Calculate counts of each value
+                counts = {value: self.values.count(value) for value in set(self.values)}
+                percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
+                return ", ".join([f"{percentages[value] * 100:.0f}% {value}" for value in sorted(counts.keys())])
+                # return f"{percentages[min(self.values)] * 100:.0f}% {min(self.values)} and {percentages[max(self.values)] * 100:.0f}% {max(self.values)}"
+            if all(isinstance(value, (int, float)) for value in self.values):
+                return f"{min(self.values)} to {max(self.values)}, avg: {sum(self.values) / len(self.values)}"
+            if all(isinstance(value, str) for value in self.values):
+                return f"{len(set(self.values))} distinct values, length: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
+            else:
+                return f"{len(set(self.values))} distinct values"
+        except TypeError:
+            # No real fallback
+            return ""
 
 
 def add_to_data_ranges(data: dict[str, Any], keys: list[str], value_stats: dict[str, DataRange]) -> None:
@@ -248,8 +257,6 @@ def add_to_data_ranges(data: dict[str, Any], keys: list[str], value_stats: dict[
         key_str = "::".join(keys + [key])
         if isinstance(value, dict):
             add_to_data_ranges(value, keys + [key], value_stats)
-        elif isinstance(value, list):
-            pass  # Not sure what to do with a list
         else:
             if key_str not in value_stats:
                 value_stats[key_str] = DataRange()
@@ -274,21 +281,22 @@ def print_json_structure(data: Dict[str, Any], indent: int = 1, keys: list[dict]
     if "__type" in data:
         s += "    " * indent + f'"__type": {data["__type"]}\n'
     for key, value in data.items():
+        data_range = data_ranges.get("::".join(keys + [key]), None)
+        data_range_str = f"({data_range.__str__()})" if data_range else ""
         the_type = get_type(value)
         if key == "__type":
             pass
         elif isinstance(value, str):
-            s += "    " * indent + f'"{key}": {the_type} ({len(value)} characters)\n'
+            s += "    " * indent + f'"{key}": {the_type} ({len(value)} characters) {data_range_str}\n'
         elif isinstance(value, list):
-            s += "    " * indent + f'"{key}": {the_type} ({len(value)} items)\n'
+            s += "    " * indent + f'"{key}": {the_type} ({len(value)} items) {data_range_str}\n'
         elif isinstance(value, dict):
-            s += "    " * indent + f'"{key}": {the_type} ({len(value)} items)\n'
+            s += "    " * indent + f'"{key}": {the_type} ({len(value)} items) {data_range_str}\n'
         elif isinstance(value, (bool, int, float)):
-            data_range = data_ranges.get("::".join(keys + [key]), None)
-            data_range_str = f"({data_range.__str__()})" if data_range else ""
             s += "    " * indent + f'"{key}": {the_type} {data_range_str}\n'
         else:
-            s += "    " * indent + f'"{key}": {the_type}\n'
+            s += "    " * indent + f'"{key}": {the_type} {data_range_str}\n'
+        # Recursion!
         if isinstance(value, dict):
             s += print_json_structure(value, indent + 1, keys=keys + [key], data_ranges=data_ranges) + "\n"
         elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
@@ -304,6 +312,8 @@ def print_structure(args, lines: list[tuple[int, str]], print_data_ranges: bool 
     data_ranges = get_data_ranges([json.loads(line[1]) for line in lines]) if print_data_ranges else None
     problem = json.loads(lines[0][1])
     structure = print_json_structure(problem, data_ranges=data_ranges)
+    if print_data_ranges:
+        print_text(f"Structure of problem {lines[0][0]}, with data ranges from {len(lines)} samples")
     print_code(structure, print_line_numbers=args.line_numbers, lexer="python")
 
 

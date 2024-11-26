@@ -37,6 +37,9 @@ Here are some recommended ways to use this script:
 
 11. Print stats, similarly to graphing:
     pprint_problems mydata.jsonl --stats --parts vocab_size
+
+12. Print the structure, along with stats about the ranges of values:
+    pprint_problems mydata.jsonl --structure --ranges
 """
 
 
