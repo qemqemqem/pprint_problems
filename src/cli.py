@@ -199,6 +199,8 @@ def main() -> None:
         raise NotImplementedError("Summary statistics are not yet implemented.")
 
     # The main case, iterate over problems
+    elif args.number == 0:
+        pass
     else:
         iterate_over_problems(args, lines)
 
