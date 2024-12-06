@@ -231,14 +231,19 @@ class DataRange:
             if all(isinstance(value, list) for value in self.values):
                 # Check this first, because lists aren't hashable
                 return f"lengths: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
-            if len(set(self.values)) <= 3:
-                # Calculate counts of each value
-                counts = {value: self.values.count(value) for value in set(self.values)}
-                percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
-                return ", ".join([f"{percentages[value] * 100:.0f}% {value}" for value in sorted(counts.keys())])
+            elif len(set(self.values)) <= 3:
+                if all(isinstance(value, str) for value in self.values) and any(len(value) > 20 for value in self.values):
+                    pass # Do nothing, pass through to next if
+                else:
+                    # Calculate counts of each value
+                    counts = {value: self.values.count(value) for value in set(self.values)}
+                    percentages = {value: count / sum(counts.values()) for value, count in counts.items()}
+                    return ", ".join([f"{percentages[value] * 100:.0f}% {value}" for value in sorted(counts.keys())])
+
+            # Don't make this elif
             if all(isinstance(value, (int, float)) for value in self.values):
                 return f"{min(self.values)} to {max(self.values)}, avg: {sum(self.values) / len(self.values)}"
-            if all(isinstance(value, str) for value in self.values):
+            elif all(isinstance(value, str) for value in self.values):
                 return f"{len(set(self.values))} distinct values, length: {min(len(value) for value in self.values)} to {max(len(value) for value in self.values)}"
             else:
                 return f"{len(set(self.values))} distinct values"
