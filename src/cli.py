@@ -83,6 +83,7 @@ def main() -> None:
         type=str,
         help=f'Optional list of parts to print. Defaults to "all". Possible values: {list(COMMON_LOCATIONS.keys())}, or any other top level JSONL key. You can use a slash, like "foo/bar" to indicate a nested key like problem["foo"]["bar"].',
     )
+    group.add_argument("--types", nargs="*", type=str, help="Optional list of types to print. Defaults to all. Options are: str, code, numeric, list, dict, bool.")
     group = parser.add_argument_group("Line Selection")
     group.add_argument("-n", "--number", type=int, help="Number of problems to print (defaults to all)")
     group.add_argument("--start", "-s", type=int, default=0, help="Start at this index (inclusive, 0-indexed).")

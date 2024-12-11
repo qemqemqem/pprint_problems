@@ -101,7 +101,7 @@ def get_all_keys(problem: dict) -> list[str]:
     return keys
 
 
-def print_problem(orig_problem, parts: Optional[list[str]] = None, print_line_numbers: bool = False) -> None:
+def print_problem(orig_problem, parts: Optional[list[str]] = None, types_to_print: Optional[list[str]] = None, print_line_numbers: bool = False) -> None:
     """
     Pretty print a problem, with an option to specify which parts are printed. Uses the `rich` library if installed. It attempts to print code blocks with syntax highlighting, and tests with pass/fail status.
     """
@@ -114,12 +114,6 @@ def print_problem(orig_problem, parts: Optional[list[str]] = None, print_line_nu
         parts = get_all_keys(orig_problem)
     problem = build_parts(orig_problem, parts=parts)  # This is where we look for alternative locations
     for part in parts:
-        if (
-            not using_default_parts
-            or part in problem
-            or (using_default_parts and part == "attempts" and "executed_attempts" in orig_problem)  # Edge case
-        ):
-            print_header_2(part.capitalize().replace("_", " "))
         # Sometimes the prompt is code-like. This is a heuristic to determine if it is.
         is_code_like = (
             part in problem
@@ -130,6 +124,22 @@ def print_problem(orig_problem, parts: Optional[list[str]] = None, print_line_nu
                 or problem[part].strip().startswith("def")
             )
         )
+        if types_to_print:
+            should_print = ("code" in types_to_print and is_code_like) or \
+                           ("str" in types_to_print and isinstance(problem[part], str)) or \
+                           ("list" in types_to_print and isinstance(problem[part], list)) or \
+                           ("dict" in types_to_print and isinstance(problem[part], dict)) or \
+                           ("bool" in types_to_print and isinstance(problem[part], bool)) or \
+                           ("numeric" in types_to_print and isinstance(problem[part], (int, float)) and not isinstance(problem[part], bool))
+            if not should_print:
+                continue
+        # Print the part name
+        if (
+            not using_default_parts
+            or part in problem
+            or (using_default_parts and part == "attempts" and "executed_attempts" in orig_problem)  # Edge case
+        ):
+            print_header_2(part.capitalize().replace("_", " "))
         # These are special cases, before we check `part not in problem`
         if part == "broken_diff":
             code = problem["code"]
@@ -363,7 +373,7 @@ def iterate_over_problems(args, lines):
                     p = truncate_strings(p, args.max_str_len)
                 print_code(json.dumps(p, indent=4), print_line_numbers=args.line_numbers, lexer="json")
             else:
-                print_problem(problem, parts=args.parts, print_line_numbers=args.line_numbers)
+                print_problem(problem, parts=args.parts, types_to_print=args.types, print_line_numbers=args.line_numbers)
             if args.manual_filter:
                 include = input(f"Include this problem in {args.filter_output}? (y/N/q) ")
                 if include.lower() == "q":
