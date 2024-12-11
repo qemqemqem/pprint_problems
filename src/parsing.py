@@ -139,7 +139,7 @@ def print_problem(orig_problem, parts: Optional[list[str]] = None, types_to_prin
             or part in problem
             or (using_default_parts and part == "attempts" and "executed_attempts" in orig_problem)  # Edge case
         ):
-            print_header_2(part.capitalize().replace("_", " "))
+            print_header_2(part)
         # These are special cases, before we check `part not in problem`
         if part == "broken_diff":
             code = problem["code"]

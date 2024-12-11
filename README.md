@@ -53,6 +53,131 @@ See this list of commands and more documentation:
 
 12. Print the structure, along with stats about the ranges of values:
     pprint_problems mydata.jsonl --structure --ranges
+    
+13. Print out only parts of a certain type:
+    pprint_problems mydata.jsonl --types str numeric bool
+```
+
+## Example Usage
+
+### Show the Details of Random Items
+
+Show the `problem["doc_id"]` and `problem["doc"]["question"]` for 3 random items:
+
+```bash
+pprint_problems results/samples.jsonl -n 3 -r -p doc_id doc/question
+```
+
+```bash
+Found 132 problems                                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 71                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                     doc_id                                      
+71                                                                               
+
+                                  doc/question                                   
+∀x ∃y {D(n())S(j()),~D(j())T(j())D(f(y,x))} ∃a {D(a*)}                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 92                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                     doc_id                                      
+92                                                                               
+
+                                  doc/question                                   
+{Box(Brown())Box(Yellow())}^{Box(Yellow())}                                      
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 110                                  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                     doc_id                                      
+110                                                                              
+
+                                  doc/question                                   
+∃a ∀x {Q(x*)P(a)} ∀x ∃b {Q(x*)R(b)}^{Q(x*)}         
+```
+
+### Searching
+
+Search for items with the word "marble" anywhere in them:
+
+```bash
+pprint_problems questions.jsonl -r -n 3 --search marble -p question answers/etr
+```
+
+```bash
+Found 60 problems                                                                
+After searching, found 12 problems                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 50                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                    question                                     
+There is a box in which there is at least a red marble, or else there is a green 
+marble and there is a blue marble, but not all three marbles. Is the probability 
+of the following situation 33%? There is a green marble and there is a blue      
+marble.                                                                          
+
+                                   answers/etr                                   
+yes                                                                              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 15                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                    question                                     
+There is a box in which there is a grey marble and either a white marble or else 
+a mauve marble, but not all three marbles are in the box. Given the preceding    
+assertion, is the probability of the following situation 50%? In the box there is
+a grey marble and there is a mauve marble.                                       
+
+                                   answers/etr                                   
+yes                                                                              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                  Problem 52                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                    question                                     
+There is a box in which there is a grey marble, or else a white marble, or else a
+mauve marble, but no more than one marble. Given the preceding assertion, is the 
+probability of the following situation 0%? In the box there is a grey marble and 
+there is a mauve marble.                                                         
+
+                                   answers/etr                                   
+yes                                                                              
+```
+
+### Showing Parts by Type
+
+Show the string and boolean parts of 1 random item:
+
+```bash
+pprint_problems datasets/etr_for_lm_eval.jsonl --types str bool -n 1 -r
+```
+
+```bash
+Found 4 problems                                                                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                   Problem 2                                   ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                    question                                     
+Consider the following premises:                                                 
+
+ 1 If either voidite is electrically insulating and fluxium is not plasma-like,  
+   or fluxium is plasma-like, or voidite is electrically insulating and fluxium  
+   is plasma-like, then fluxium is not plasma-like.                              
+ 2 If aurorium is electrically insulating, then either aurorium is electrically  
+   insulating, or aurorium is not electrically insulating.                       
+
+Can you conclude that fluxium is not plasma-like?                                
+
+                   scoring_guide/classically_valid_conclusion                    
+true                                                                             
+
+               scoring_guide/question_conclusion_is_etr_conclusion               
+false                                                                            
 ```
 
 ### Structure
@@ -60,61 +185,43 @@ See this list of commands and more documentation:
 Here's an example of how to use this program to print out the structure of a dataset:
 
 ```bash
-pprint_problems mydata.jsonl --structure --ranges
+pprint_problems questions.jsonl --structure
 ```
 
-Which will yield something like the following:
+```bash
+Found 60 problems                                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                          JSON Structure (problem 0)                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+{                                                                                
+    "question": str (215 characters)                                             
+    "answers": dict (2 items)                                                    
+    {                                                                            
+        "etr": str (3 characters)                                                
+        "classical": str (2 characters)                                          
+    }                                                                            
+}                                                                              
+```
+
+You can also show some details about the contents of the dataset with the `--ranges` flag:
 
 ```bash
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                           JSON Structure (problem 0), with Data Ranges from 50 Samples                            ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-{
-    "doc_id": int (0 to 49, avg: 24.5)
-    "doc": dict (2 items)
-    {
-        "question": str (322 characters) (50 distinct values, length: 200 to 1845)
-        "scoring_guide": dict (14 items)
-        {
-            "premises": list[list[str]] (2 items) (Lengths: 2 to 2)
-            "full_prose": str (322 characters) (50 distinct values, length: 200 to 1845)
-            "question_conclusion": list[str] (2 items) (Lengths: 2 to 2)
-            "etr_conclusion": list[str] (2 items) (Lengths: 2 to 2)
-            "etr_conclusion_is_categorical": bool (74% False, 26% True)
-            "question_conclusion_is_etr_conclusion": bool (100% True)
-            "classically_valid_conclusion": bool (80% False, 20% True)
-            "vocab_size": int (2 to 6, avg: 3.74)
-            "max_disjuncts": int (1 to 12, avg: 3.6)
-            "num_variables": int (2 to 11, avg: 6.36)
-            "num_disjuncts": int (2 to 6, avg: 4.06)
-            "num_premises": int (100% 2)
-            "etr_answer": str (3 characters) (74% NO, 26% YES)
-            "logically_correct_answer": str (2 characters) (80% NO, 20% YES)
-        }
-    }
-    "target": str (1197 characters) (50 distinct values, length: 844 to 7552)
-    "arguments": dict (1 items)
-    {
-        "gen_args_0": dict (2 items)
-        {
-            "arg_0": list[str] (1 items) (Lengths: 1 to 1)
-            "arg_1": dict (4 items)
-            {
-                "until": list[str] (1 items) (Lengths: 1 to 1)
-                "do_sample": bool (100% False)
-                "temperature": float (100% 0.2)
-                "max_gen_toks": int (100% 2000)
-            }
-        }
-    }
-    "resps": list[list[str]] (1 items) (Lengths: 1 to 1)
-    "filtered_resps": list[str] (1 items) (Lengths: 1 to 1)
-    "doc_hash": str (64 characters) (50 distinct values, length: 64 to 64)
-    "prompt_hash": str (64 characters) (50 distinct values, length: 64 to 64)
-    "target_hash": str (64 characters) (50 distinct values, length: 64 to 64)
-    "correct": float (70% 0.0, 30% 1.0)
-    "len_response": int (14% 2, 86% 3)
-}
+pprint_problems questions.jsonl --ranges
+```
+
+```bash
+Found 60 problems                                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃         JSON Structure (problem 0), with Data Ranges from 60 Samples          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+{                                                                                
+    "question": str (215 characters) (60 distinct values, length: 38 to 738)     
+    "answers": dict (2 items)                                                    
+    {                                                                            
+        "etr": str (3 characters) (10% no, 90% yes)                              
+        "classical": str (2 characters) (63% no, 37% yes)                        
+    }                                                                            
+}                                                                                
 ```
 
 ## License
