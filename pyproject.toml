@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pprint_problems"
-version = "0.1.14"
+version = "0.1.15"
 authors = [
   { name="Andrew Keenan Richardson", email="richardson.andrew@gmail.com" },
 ]
