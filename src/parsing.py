@@ -210,6 +210,9 @@ def print_problem(orig_problem, parts: Optional[list[str]] = None, types_to_prin
             print_text("\n".join([f" - {c}" for c in problem[part]]))
         elif part == "broken_suggestions":
             print_text("\n".join([f" - {c}" for c in problem[part]]))
+        elif isinstance(problem[part], list):
+            for i, item in enumerate(problem[part]):
+                print(f"{i+1}.\t{item}")
         else:
             # Unknown type fallback
             if not isinstance(problem[part], str):
