@@ -30,7 +30,7 @@ def load_results(file_path):
     return results
 
 
-def get_value(result, param):
+def get_value(result: dict, param: str):
     if "/" in param:
         parts = param.split("/")
         while parts:
@@ -41,11 +41,7 @@ def get_value(result, param):
         return result
 
     try:
-        return result['doc']['scoring_guide']['parameters'][param]
-    except KeyError as e:
-        pass
-    try:
-        return result['doc']['scoring_guide'][param]
+        return result[param]
     except KeyError as e:
         pass
     try:
@@ -53,7 +49,11 @@ def get_value(result, param):
     except KeyError as e:
         pass
     try:
-        return result[param]
+        return result['doc']['scoring_guide'][param]
+    except KeyError as e:
+        pass
+    try:
+        return result['doc']['scoring_guide']['parameters'][param]
     except KeyError as e:
         raise e
 
