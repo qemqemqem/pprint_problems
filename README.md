@@ -2,6 +2,8 @@
 
 Used to print entries from jsonl files, developed with LLM evals in mind.
 
+⭐ **If you find this tool useful, please consider starring the repository on GitHub!** ⭐
+
 ## Installation
 
 ```pipx install pprint_problems```
